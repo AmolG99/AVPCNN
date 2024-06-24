@@ -7,14 +7,15 @@ import os
 import cv2
 from PIL import Image
 
-cap = cv2.VideoCapture(0)
+video_path = 'test_vid.MP4'
 
-if not cap.isOpened():
-    raise Exception("camera'nt")
+cap = cv2.VideoCapture(video_path)
 
 output_dir = 'captured_frames'
 os.makedirs(output_dir, exist_ok=True)
 
+if not cap.isOpened():
+    raise Exception("camera'nt")
 frame_count = 0
 
 while True:
@@ -27,7 +28,7 @@ while True:
     cv2.imwrite(frame_filename, frame)
     frame_count += 1
     
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if cv2.waitKey(1) & 0xFF == ord('q'):   
         break
     
 # Release the webcam and close windows
