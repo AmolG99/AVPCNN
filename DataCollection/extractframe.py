@@ -1,7 +1,7 @@
 import cv2
 import os
 
-def extractframe(cap, frame_count):
+def extractframe(cap, frame_count, output_dir):
     ret, frame = cap.read()
     
     if not ret:

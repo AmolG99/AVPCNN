@@ -23,7 +23,7 @@ video_length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
 for index in range(video_length):
     
-    extractframe(cap, frame_count)
+    extractframe(cap, frame_count, output_dir)
     frame_count += 1
     
 cap.release()
