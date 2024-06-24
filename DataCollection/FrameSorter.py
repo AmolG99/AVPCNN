@@ -5,6 +5,7 @@
 #-----------------------------------------------------------------------------------------------------------#
 import os
 import cv2
+from extractframe import *
 from PIL import Image
 
 video_path = 'test_vid.MP4'
@@ -16,8 +17,19 @@ os.makedirs(output_dir, exist_ok=True)
 
 if not cap.isOpened():
     raise Exception("camera'nt")
-frame_count = 0
 
+frame_count = 0
+video_length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+for index in range(video_length):
+    
+    extractframe(cap, frame_count)
+    frame_count += 1
+    
+cap.release()
+cv2.destroyAllWindows()
+
+"""
 while True:
     ret, frame = cap.read()
     
@@ -34,3 +46,5 @@ while True:
 # Release the webcam and close windows
 cap.release()
 cv2.destroyAllWindows()
+
+"""
