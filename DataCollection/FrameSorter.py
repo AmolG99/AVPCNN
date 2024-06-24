@@ -26,7 +26,7 @@ for index in range(video_length):
     extractframe(cap, frame_count, output_dir)
     frame_count += 1
     
-    print(f'extracting frame {frame_count}')
+    print(f'extracting frame {frame_count}' / {video_length})
     
 cap.release()
 cv2.destroyAllWindows()
