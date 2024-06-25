@@ -19,7 +19,7 @@ if not cap.isOpened():
     raise Exception("camera'nt")
 
 frame_count = 0
-frame_interval = 5
+frame_interval = 1
 video_length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
 for index in range(video_length):
