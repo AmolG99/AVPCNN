@@ -24,7 +24,7 @@ video_length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
 for index in range(video_length):
     
-    extractframe(cap, frame_count, frame_interval output_dir)
+    extractframe(cap, frame_count, frame_interval, output_dir)
     frame_count += 1
     
     print(f'extracting frame {frame_count} of {video_length}')
