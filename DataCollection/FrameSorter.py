@@ -19,7 +19,7 @@ if not cap.isOpened():
     raise Exception("camera'nt")
 
 frame_count = 0
-frame_interval = 1
+frame_interval = 3
 video_length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
 for index in range(video_length):
@@ -28,7 +28,6 @@ for index in range(video_length):
     frame_count += 1
     
     print(f'extracting frame {frame_count} of {video_length}')
-    index += 5
     
 cap.release()
 cv2.destroyAllWindows()
