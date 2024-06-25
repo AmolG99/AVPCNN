@@ -20,14 +20,14 @@ if not cap.isOpened():
 
 frame_count = 0
 frame_interval = 5
-video_length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+video_length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)// frame_interval)
 
 for index in range(video_length):
     
     extractframe(cap, frame_count, frame_interval, output_dir)
     frame_count += 1
     
-    print(f'extracting frame {frame_count} of {video_length // 5}')
+    print(f'extracting frame {frame_count} of {video_length}')
     
 cap.release()
 cv2.destroyAllWindows()
