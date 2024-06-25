@@ -1,53 +1,63 @@
-# Video frame extractor & preprocessor using PIL and cv2
-# A Michael Lance & Amol Gupta production
+# Video frame extractor & preprocessor using PIL and cv2# A Michael Lance & Amol Gupta production
 # 6/21/2024
-# 6/24/2024
+# 6/25/2024
 #-----------------------------------------------------------------------------------------------------------#
-import os
 import cv2
-from extractframe import *
-from PIL import Image
+import os
+from multiprocessing import Pool, cpu_count
+import time
 
+# Path to the video file
 video_path = 'test_vid.MP4'
 
-cap = cv2.VideoCapture(video_path)
-
-output_dir = 'captured_frames'
+# Create a directory to save frames
+output_dir = 'extracted_frames'
 os.makedirs(output_dir, exist_ok=True)
 
-if not cap.isOpened():
-    raise Exception("camera'nt")
+def extract_frames(start_frame, end_frame, video_path, output_dir, interval, total_frames):
+    cap = cv2.VideoCapture(video_path)
+    cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame)
+    
+    for frame_num in range(start_frame, end_frame):
+        ret, frame = cap.read()
+        if not ret:
+            break
 
-frame_count = 0
-frame_interval = 1
-video_length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        if frame_num % interval == 0:
+            frame_filename = os.path.join(output_dir, f'frame_{frame_num:04d}.png')
+            cv2.imwrite(frame_filename, frame)
+        
+        print(f"{frame_num} / {total_frames}")
 
-for index in range(video_length):
-    
-    extractframe(cap, frame_count, frame_interval, output_dir)
-    frame_count += 1
-    
-    print(f'extracting frame {frame_count} of {video_length}')
-    
-cap.release()
-cv2.destroyAllWindows()
+    cap.release()
 
-"""
-while True:
-    ret, frame = cap.read()
+def main():
+    cap = cv2.VideoCapture(video_path)
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    cap.release()
     
-    if not ret:
-        raise Exception("Couldn't read no frame")
-    
-    frame_filename = os.path.join(output_dir, f'frame_{frame_count:04d}.png')
-    cv2.imwrite(frame_filename, frame)
-    frame_count += 1
-    
-    if cv2.waitKey(1) & 0xFF == ord('q'):   
-        break
-    
-# Release the webcam and close windows
-cap.release()
-cv2.destroyAllWindows()
+    print(f"Total number of frames: {total_frames}")
 
-"""
+    num_processes = cpu_count()
+    chunk_size = total_frames // num_processes
+    interval = 5  # Extract every third frame
+
+    pool = Pool(processes=num_processes)
+    tasks = []
+
+    for i in range(num_processes):
+        start_frame = i * chunk_size
+        end_frame = (i + 1) * chunk_size if i != num_processes - 1 else total_frames
+        tasks.append((start_frame, end_frame, video_path, output_dir, interval, total_frames))
+
+    pool.starmap(extract_frames, tasks)
+    pool.close()
+    pool.join()
+
+if __name__ == '__main__':
+    start_time = time.time()
+    main()
+    end_time = time.time()
+
+    prolapsed_time = end_time - start_time
+    print(prolapsed_time)
