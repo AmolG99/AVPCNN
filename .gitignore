@@ -1,3 +1,4 @@
 env/
 DataCollection/__pycache__/
 test_vid.MP4
+DataCollection/extracted_frames/

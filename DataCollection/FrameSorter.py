@@ -1,4 +1,5 @@
-# Video frame extractor & preprocessor using PIL and cv2# A Michael Lance & Amol Gupta production
+# Video frame extractor & preprocessor using PIL and cv2
+# # A Michael Lance & Amol Gupta production
 # 6/21/2024
 # 6/25/2024
 #-----------------------------------------------------------------------------------------------------------#
@@ -7,14 +8,16 @@ import os
 from multiprocessing import Pool, cpu_count
 import time
 
+
 # Path to the video file
-video_path = 'test_vid.MP4'
+video_path = 'DataCollection/test_vid.MP4'
 
 # Create a directory to save frames
-output_dir = 'extracted_frames'
+output_dir = 'DataCollection/extracted_frames'
 os.makedirs(output_dir, exist_ok=True)
 
 def extract_frames(start_frame, end_frame, video_path, output_dir, interval, total_frames):
+    #extract frame from video, save it as a flat file and open it 
     cap = cv2.VideoCapture(video_path)
     cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame)
     
@@ -26,10 +29,20 @@ def extract_frames(start_frame, end_frame, video_path, output_dir, interval, tot
         if frame_num % interval == 0:
             frame_filename = os.path.join(output_dir, f'frame_{frame_num:04d}.png')
             cv2.imwrite(frame_filename, frame)
+    
         
-        print(f"{frame_num} / {total_frames}")
+        print(f" Extracted: {frame_num} / {total_frames}")
+        
+        
 
     cap.release()
+    
+def resize_image(image):
+    h, w = image.shape[:2]
+    if h < w:
+        img = cv2.resize(image, (DESIRED_WIDTH, math.floor(h/(w/DESIRED_WIDTH))))
+    else:
+        img = cv2.resize(image, (math.floor(w/(h/DESIRED_HEIGHT)), DESIRED_HEIGHT))
 
 def main():
     cap = cv2.VideoCapture(video_path)
@@ -58,6 +71,5 @@ if __name__ == '__main__':
     start_time = time.time()
     main()
     end_time = time.time()
-
     prolapsed_time = end_time - start_time
     print(prolapsed_time)
