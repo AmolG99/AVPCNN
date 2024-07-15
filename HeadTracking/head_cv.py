@@ -77,3 +77,6 @@ while True:
 # Release the VideoCapture object
 cap.release()
 cv2.destroyAllWindows()
+
+
+# for key recognition multiply key coordinates by ratio value instead of doing crazy math that Michael is too stoopid to do

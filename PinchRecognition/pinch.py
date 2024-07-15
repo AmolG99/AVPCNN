@@ -29,7 +29,7 @@ roi_right = roi_left + 2000
 frames = os.listdir(input_dir)
 frames.sort()
 
-for frame_filename in frames
+for frame_filename in frames:
     frame = cv2.imread(os.path.join(input_dir, frame_filename))
     #print(frame.shape)
     # Crop the frame to the ROI
@@ -100,3 +100,9 @@ print(f"True Positives: {TP}")
 print(f"True Negatives: {TN}")
 print(f"False Positives: {FP}")
 print(f"False Negatives: {FN}")
+
+
+# Pinch Group Recognition Algorithm
+
+# take recognized pinch and construct an array containing that pinch and n number frames to either index location, write that to a file to read in head tracking.
+
