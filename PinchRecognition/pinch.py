@@ -26,7 +26,10 @@ roi_bottom = roi_top + 2000
 roi_left = 170
 roi_right = roi_left + 2000
 
-for frame_filename in os.listdir(input_dir):
+frames = os.listdir(input_dir)
+frames.sort()
+
+for frame_filename in frames
     frame = cv2.imread(os.path.join(input_dir, frame_filename))
     #print(frame.shape)
     # Crop the frame to the ROI
