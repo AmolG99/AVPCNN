@@ -2,3 +2,7 @@ env/
 DataCollection/__pycache__/
 test_vid.MP4
 DataCollection/extracted_frames/
+DataCollection/*.MP4
+DataCollection/pinch_frames
+DataCollection/extracted_frames/*.png
+.venv/
