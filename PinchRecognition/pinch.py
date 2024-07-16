@@ -2,10 +2,14 @@ import cv2
 import mediapipe as mp
 import os
 import pandas as pd
+import sys
 
 # Initialize MediaPipe Hands model
 mp_hands = mp.solutions.hands
-hands = mp_hands.Hands(static_image_mode=False, max_num_hands=1, min_detection_confidence=0.7)
+hands = mp_hands.Hands(static_image_mode=True, max_num_hands=1, min_detection_confidence=0.7)
+
+algorithm_output_hash = {} # dict for checking accuracy based on ground truth
+ground_truth_hash = {} # dict for the ground truth key value pair
 
 # Initialize MediaPipe Drawing utility
 mp_drawing = mp.solutions.drawing_utils
@@ -48,6 +52,7 @@ for frame_filename in frames:
                 print(f"Pinch gesture detected in {frame_filename}!")
                 # Draw hand landmarks
                 mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
+                algorithm_output_hash[int(frame_filename[-8:-4])] = 1
                 
                 # Convert the RGB image back to BGR for display
                 #frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)    
@@ -57,14 +62,52 @@ for frame_filename in frames:
                 x_max = max([landmark.x for landmark in hand_landmarks.landmark])
                 y_max = max([landmark.y for landmark in hand_landmarks.landmark])
                 cv2.rectangle(frame, (int(x_min * frame.shape[1]), int(y_min * frame.shape[0])), (int(x_max * frame.shape[1]), int(y_max * frame.shape[0])), (0, 255, 0), 2)
+            else:
+                algorithm_output_hash[int(frame_filename[-8:-4])] = 0
+
     cv2.imshow('MediaPipe Hands', roi)
+
     if cv2.waitKey(10) & 0xFF == ord('q'):
         break
 
 hands.close()
 cv2.destroyAllWindows()
 
+# Read the CSV file
+data = pd.read_csv('./DataCollection/ground_truth_DSCN0160.csv')
 
+
+# Initialize counters for true positives, false positives, true negatives, false negatives
+TP = FP = TN = FN = 0
+
+for _, row in data.iterrows():
+    ground_truth_hash[int(row[0])] = int(row[1])
+
+for key, value in ground_truth_hash.items():
+    if (algorithm_output_hash[key] == 1) and (value == 1):
+        TP += 1
+    elif (algorithm_output_hash[key] == 0) and (value == 0):
+        TN += 1
+    elif (algorithm_output_hash[key] == 1) and (value == 0):
+        FP += 1
+    elif (algorithm_output_hash[key] == 0) and (value == 1):
+        FN += 1
+
+sensitivity = TP / (TP + FN)
+specificity = TN / (TN + FP)
+accuracy = (TP + TN) / (TP + TN + FP + FN)
+print(f"Sensitivity: {sensitivity * 100}%")
+print(f"Specificity: {specificity * 100}%")
+print(f"Accuracy: {accuracy * 100}%")
+
+# Print the counts of true positives, true negatives, false positives, and false negatives
+print(f"True Positives: {TP}")
+print(f"True Negatives: {TN}")
+print(f"False Positives: {FP}")
+print(f"False Negatives: {FN}")    
+#print(ground_truth_hash)
+#print(algorithm_output_hash)
+"""
 # Read the CSV file
 data = pd.read_csv('./DataCollection/ground_truth_DSCN0160.csv')
 
@@ -100,7 +143,8 @@ print(f"True Positives: {TP}")
 print(f"True Negatives: {TN}")
 print(f"False Positives: {FP}")
 print(f"False Negatives: {FN}")
-
+"""
+#print(algorithm_output_hash)
 
 # Pinch Group Recognition Algorithm
 
