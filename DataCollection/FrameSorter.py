@@ -7,10 +7,11 @@ import cv2
 import os
 from multiprocessing import Pool, cpu_count
 import time
+import sys
 
 
 # Path to the video file
-video_path = 'DataCollection/test_vid.MP4'
+video_path = sys.argv[1]
 
 # Create a directory to save frames
 output_dir = 'DataCollection/extracted_frames'

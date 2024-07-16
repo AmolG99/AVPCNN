@@ -6,3 +6,4 @@ DataCollection/*.MP4
 DataCollection/pinch_frames
 DataCollection/extracted_frames/*.png
 .venv/
+DataCollection/*.csv
