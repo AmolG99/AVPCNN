@@ -8,6 +8,7 @@ import sys
 mp_hands = mp.solutions.hands
 hands = mp_hands.Hands(static_image_mode=True, max_num_hands=1, min_detection_confidence=0.7)
 
+
 algorithm_output_hash = {} # dict for checking accuracy based on ground truth
 ground_truth_hash = {} # dict for the ground truth key value pair
 
@@ -22,7 +23,10 @@ def is_pinching(index_finger_tip, thumb_tip):
     return False
 
 # Directory containing extracted frames
-input_dir = 'DataCollection/extracted_frames'
+input_dir = f'./DataCollection/extracted_frames/{sys.argv[1][:-4]}'
+out_name = sys.argv[1][:-4]
+output_dir = f'./PinchRecognition/detected_frames/{out_name}'
+os.makedirs(output_dir, exist_ok=True)
 
 # Define the region of interest (ROI)
 roi_top = 170
@@ -51,9 +55,9 @@ for frame_filename in frames:
             if is_pinching(index_finger_tip, thumb_tip):
                 print(f"Pinch gesture detected in {frame_filename}!")
                 # Draw hand landmarks
-                mp_drawing.draw_landmarks(frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
+                mp_drawing.draw_landmarks(roi, hand_landmarks, mp_hands.HAND_CONNECTIONS)
                 algorithm_output_hash[int(frame_filename[-8:-4])] = 1
-                
+                cv2.imwrite(f'{output_dir}/{frame_filename}', roi)
                 # Convert the RGB image back to BGR for display
                 #frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)    
             # Draw bounding box around the hand
@@ -74,7 +78,7 @@ hands.close()
 cv2.destroyAllWindows()
 
 # Read the CSV file
-data = pd.read_csv('./DataCollection/ground_truth_DSCN0160.csv')
+data = pd.read_csv(f'./DataCollection/ground_truth_{out_name}.csv')
 
 
 # Initialize counters for true positives, false positives, true negatives, false negatives

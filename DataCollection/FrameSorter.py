@@ -1,7 +1,7 @@
-# Video frame extractor & preprocessor using PIL and cv2
+# Video frame extractor & preprocessor using cv2
 # # A Michael Lance & Amol Gupta production
 # 6/21/2024
-# 6/25/2024
+# 7/16/2024
 #-----------------------------------------------------------------------------------------------------------#
 import cv2
 import os
@@ -11,10 +11,11 @@ import sys
 
 
 # Path to the video file
-video_path = sys.argv[1]
+video_path = f'./DataCollection/{sys.argv[1]}'
+video_name = sys.argv[1]
 
 # Create a directory to save frames
-output_dir = 'DataCollection/extracted_frames'
+output_dir = f'./DataCollection/extracted_frames/{video_name[:-4]}'
 os.makedirs(output_dir, exist_ok=True)
 
 def extract_frames(start_frame, end_frame, video_path, output_dir, interval, total_frames):
@@ -54,7 +55,7 @@ def main():
 
     num_processes = cpu_count()
     chunk_size = total_frames // num_processes
-    interval = 5  # Extract every third frame
+    interval = 3  # Extract every third frame
 
     pool = Pool(processes=num_processes)
     tasks = []

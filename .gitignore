@@ -5,5 +5,6 @@ DataCollection/extracted_frames/
 DataCollection/*.MP4
 DataCollection/pinch_frames
 DataCollection/extracted_frames/*.png
+PinchRecognition/detected_frames/*
 .venv/
 DataCollection/*.csv
